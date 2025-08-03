@@ -53,7 +53,7 @@ def execute_potigol_code(code_string, user_input_string=""):
             input=user_input_string, # AQUI ESTÁ A MÁGICA
             capture_output=True, 
             text=True, 
-            timeout=10,
+            timeout=120,
             encoding='utf-8'
         )
         
@@ -77,6 +77,7 @@ def run_code():
     output = execute_potigol_code(code, user_input) # Passa a entrada para a função
     return jsonify({"output": output})
 
+# Rota para verificar a resposta de uma atividade
 @app.route('/verify', methods=['POST'])
 def verify_answer():
     data = request.json
