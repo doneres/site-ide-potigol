@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}IDE de Programação{% endblock %}
+
+{% block content %}
+    <p class="instructions">Digite seu código Potigol abaixo e clique em Executar.</p>
+    <textarea id="codeInput" placeholder='escreva "Olá, Mundo!"'></textarea>
+    <button id="runButton">Executar</button>
+    <h3>Saída:</h3>
+    <pre id="output"></pre>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+{% endblock %}

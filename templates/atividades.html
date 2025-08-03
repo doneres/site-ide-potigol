@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Atividades Propostas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Atividades Propostas</h2>
+    <p>Escolha um módulo abaixo para ver os desafios correspondentes.</p>
+</div>
+
+<div class="module">
+    <div class="module-header">
+        <h3>Módulo 01: Conceitos Básicos e Saída de Dados</h3>
+        <span class="module-toggle-icon">+</span>
+    </div>
+    <div class="module-content">
+        <div class="activities-grid">
+            <div class="card" id="atividade-1">
+                <div class="card-header">
+                    <h4>Atividade 01: Olá, Mundo!</h4>
+                    <span class="tag tag-easy">Fácil</span>
+                </div>
+                <p class="card-description">Crie um programa que imprima a mensagem "Potigol é legal!" na tela.</p>
+                <button class="btn-resolver">Resolver Atividade</button>
+            </div>
+            <div class="card" id="atividade-2">
+                <div class="card-header">
+                    <h4>Atividade 02: Múltiplas Linhas</h4>
+                    <span class="tag tag-easy">Fácil</span>
+                </div>
+                <p class="card-description">Imprima seu nome completo em uma linha e sua idade em outra linha.</p>
+                <button class="btn-resolver">Resolver Atividade</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="module">
+    <div class="module-header">
+        <h3>Módulo 02: Variáveis e Operadores Aritméticos</h3>
+        <span class="module-toggle-icon">+</span>
+    </div>
+    <div class="module-content">
+        </div>
+</div>
+
+
+<div id="activity-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h3 id="modal-activity-title">Título da Atividade</h3>
+        <p id="modal-activity-description">Descrição da atividade aqui.</p>
+        <label for="modal-code-input">Seu código:</label>
+        <textarea id="modal-code-input"></textarea>
+        <button id="modal-check-answer" class="btn-card">Verificar Resposta</button>
+        <div class="modal-output-container">
+            <h4>Saída da Verificação:</h4>
+            <pre id="modal-output"></pre>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Lógica do Menu Sanfona (Accordion)
+        const moduleHeaders = document.querySelectorAll('.module-header');
+        moduleHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const moduleContent = header.nextElementSibling;
+                const icon = header.querySelector('.module-toggle-icon');
+                if (moduleContent.style.maxHeight) {
+                    moduleContent.style.maxHeight = null;
+                    icon.textContent = '+';
+                    header.classList.remove('active');
+                } else {
+                    moduleContent.style.maxHeight = moduleContent.scrollHeight + "px";
+                    icon.textContent = '−';
+                    header.classList.add('active');
+                }
+            });
+        });
+
+        // Lógica do Modal de Atividade
+        const modal = document.getElementById('activity-modal');
+        const closeModalButton = document.querySelector('.close-button');
+        const resolverButtons = document.querySelectorAll('.btn-resolver');
+        let modalEditor = null; // Variável para guardar a instância do editor do modal
+
+        resolverButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                // Pega as informações do card pai do botão clicado
+                const card = e.target.closest('.card');
+                const title = card.querySelector('h4').textContent;
+                const description = card.querySelector('.card-description').textContent;
+
+                // Preenche o modal com as informações da atividade
+                document.getElementById('modal-activity-title').textContent = title;
+                document.getElementById('modal-activity-description').textContent = description;
+                document.getElementById('modal-output').textContent = ''; // Limpa a saída anterior
+
+                // Mostra o modal
+                modal.style.display = 'flex';
+
+                // Inicializa o editor CodeMirror DENTRO do modal (só depois que ele está visível)
+                if (!modalEditor) {
+                    modalEditor = CodeMirror.fromTextArea(document.getElementById('modal-code-input'), {
+                        lineNumbers: true,
+                        mode: 'text/x-csrc',
+                        theme: 'eclipse',
+                        lineWrapping: true
+                    });
+                }
+                setTimeout(() => modalEditor.refresh(), 1); // Força a atualização do editor
+            });
+        });
+        
+        function closeModal() {
+            modal.style.display = 'none';
+            // Destrói a instância do CodeMirror para limpar a memória quando o modal fecha
+            if (modalEditor) {
+                modalEditor.toTextArea();
+                modalEditor = null;
+            }
+        }
+
+        closeModalButton.addEventListener('click', closeModal);
+        // Fecha o modal se o usuário clicar no fundo escuro
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Lógica do botão "Verificar Resposta"
+        document.getElementById('modal-check-answer').addEventListener('click', () => {
+            if (modalEditor) {
+                const code = modalEditor.getValue();
+                const outputEl = document.getElementById('modal-output');
+                outputEl.textContent = `(Simulação) Verificando o código...\n\n${code}`;
+                // No futuro, aqui você enviaria o 'code' para o backend para uma verificação real.
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Materiais de Estudo{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Materiais de Estudo</h2>
+    <p>Aqui você encontra as apostilas e materiais de apoio para cada aula do curso.</p>
+</div>
+
+<div class="activities-grid">
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Aula 01: Olá, Mundo!</h3>
+            <span class="status-icon unlocked"><i class="fas fa-lock-open"></i></span>
+        </div>
+        <p>Uma introdução ao mundo da programação, algoritmos e os primeiros comandos na linguagem Potigol.</p>
+        <a href="{{ url_for('static', filename='pdfs/LOP_ Aula 1 - Olá, Mundo! - Uma Introdução Ao Mundo Da Programação.pdf') }}" class="btn-card" target="_blank" rel="noopener noreferrer">
+            Visualizar Material
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Aula 02: Variáveis e Tipos de Dados</h3>
+            <span class="status-icon unlocked"><i class="fas fa-lock-open"></i></span>
+        </div>
+        <p>Aprenda a declarar variáveis, os tipos de dados (Inteiro, Real, Texto) e como utilizá-los para guardar informações.</p>
+        <a href="{{ url_for('static', filename='pdfs/Aula 02 - Variaveis.pdf') }}" class="btn-card" target="_blank" rel="noopener noreferrer">
+            Visualizar Material
+        </a>
+    </div>
+
+    <div class="card card-locked">
+        <div class="card-header">
+            <h3>Aula 03: Operadores Aritméticos</h3>
+            <span class="status-icon locked"><i class="fas fa-lock"></i></span>
+        </div>
+        <p>Descubra como realizar cálculos matemáticos, como soma, subtração, multiplicação e divisão no seu código.</p>
+        <button class="btn-card" disabled>Em Breve</button>
+    </div>
+
+</div>
+{% endblock %}
