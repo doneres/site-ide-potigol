@@ -50,9 +50,17 @@
         <span class="close-button">&times;</span>
         <h3 id="modal-activity-title">Título da Atividade</h3>
         <p id="modal-activity-description">Descrição da atividade aqui.</p>
+        
         <label for="modal-code-input">Seu código:</label>
         <textarea id="modal-code-input"></textarea>
+
+        <div class="input-area modal-input-area">
+            <label for="modal-program-input">Entrada do Programa (se houver):</label>
+            <textarea id="modal-program-input" placeholder="Digite aqui os valores para os comandos 'leia', um por linha."></textarea>
+        </div>
+        
         <button id="modal-check-answer" class="btn-card">Verificar Resposta</button>
+        
         <div class="modal-output-container">
             <h4>Saída da Verificação:</h4>
             <pre id="modal-output"></pre>
@@ -116,6 +124,7 @@
                     });
                 }
                 modalEditor.setValue('');
+                document.getElementById('modal-program-input').value = ''; // Limpa a caixa de entrada
                 setTimeout(() => modalEditor.refresh(), 1);
             });
         });
@@ -138,6 +147,7 @@
         checkAnswerButton.addEventListener('click', async () => {
             if (modalEditor) {
                 const code = modalEditor.getValue();
+                const userInput = document.getElementById('modal-program-input').value;
                 const outputEl = document.getElementById('modal-output');
                 outputEl.textContent = 'Verificando...';
                 outputEl.style.border = 'none';
@@ -146,7 +156,11 @@
                     const response = await fetch('/verify', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ code: code, activity_id: currentActivityId })
+                        body: JSON.stringify({ 
+                            code: code, 
+                            activity_id: currentActivityId,
+                            user_input: userInput 
+                        })
                     });
                     const result = await response.json();
                     

@@ -9,7 +9,7 @@ app = Flask(__name__)
 # O '\n' é importante porque a função 'escreva' do Potigol adiciona uma nova linha.
 expected_outputs = {
     "atividade-1": "Potigol é legal!\n",
-    "atividade-2": "Seu Nome Completo\nSua Idade\n" # Exemplo, você ajustaria
+    "atividade-2": "Douglas\n30\n" # Exemplo: nome em uma linha, idade na outra
 }
 
 # --- Rotas das Páginas ---
@@ -32,13 +32,13 @@ def execute_potigol_code(code_string, user_input_string=""):
     e retorna a saída.
     """
     temp_filename = f"temp_script_{os.urandom(8).hex()}.poti"
+    # Garante que o caminho seja absoluto para o diretório de trabalho atual
     script_path = os.path.join(os.getcwd(), temp_filename)
 
     try:
         with open(script_path, 'w', encoding='utf-8') as f:
             f.write(code_string)
 
-        # ATUALIZAÇÃO: Adicionamos a flag '-i' para modo interativo
         command = [
             "sudo", "docker", "run", "-i", "--rm",
             "--network=none",
@@ -47,20 +47,20 @@ def execute_potigol_code(code_string, user_input_string=""):
             "script.poti"
         ]
         
-        # ATUALIZAÇÃO: Passamos a entrada do usuário para o 'input' do processo
+        # Passamos a entrada do usuário para o 'input' do processo
         result = subprocess.run(
             command, 
-            input=user_input_string, # AQUI ESTÁ A MÁGICA
+            input=user_input_string,
             capture_output=True, 
             text=True, 
-            timeout=120,
+            timeout=15, # Timeout ajustado para 15 segundos
             encoding='utf-8'
         )
         
         return result.stdout + result.stderr
 
     except subprocess.TimeoutExpired:
-        return "Erro: O código demorou muito para executar (limite de 10 segundos)."
+        return "Erro: O código demorou muito para executar (limite de 15 segundos)."
     except Exception as e:
         return f"Erro inesperado no servidor: {str(e)}"
     
@@ -73,21 +73,22 @@ def execute_potigol_code(code_string, user_input_string=""):
 def run_code():
     data = request.json
     code = data.get('code', '')
-    user_input = data.get('user_input', '') # Pega a entrada do usuário
-    output = execute_potigol_code(code, user_input) # Passa a entrada para a função
+    user_input = data.get('user_input', '')
+    output = execute_potigol_code(code, user_input)
     return jsonify({"output": output})
 
-# Rota para verificar a resposta de uma atividade
 @app.route('/verify', methods=['POST'])
 def verify_answer():
     data = request.json
     code = data.get('code', '')
     activity_id = data.get('activity_id', '')
+    user_input = data.get('user_input', '') # Pega a entrada do usuário do modal
 
     if not activity_id or activity_id not in expected_outputs:
         return jsonify({"correct": False, "output": "ID da atividade inválido."})
 
-    actual_output = execute_potigol_code(code)
+    # CORREÇÃO: Passa o user_input para a função de execução
+    actual_output = execute_potigol_code(code, user_input)
     expected_output = expected_outputs[activity_id]
 
     if actual_output.strip() == expected_output.strip():
@@ -100,3 +101,5 @@ def verify_answer():
             "correct": False, 
             "output": f"❌ Ops, resposta incorreta.\n\nSaída esperada:\n{expected_output}\nSua saída:\n{actual_output}"
         })
+
+# O bloco if __name__ == '__main__': foi removido, pois não é utilizado em produção com Gunicorn.
