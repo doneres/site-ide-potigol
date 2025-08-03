@@ -65,27 +65,48 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // ... (código do menu sanfona continua o mesmo) ...
+        // ====================================================
+        // PARTE 1: LÓGICA PARA O MENU SANFONA (DROPDOWNS)
+        // ====================================================
+        const moduleHeaders = document.querySelectorAll('.module-header');
+        moduleHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const moduleContent = header.nextElementSibling;
+                const icon = header.querySelector('.module-toggle-icon');
 
-        // Lógica do Modal de Atividade
+                if (moduleContent.style.maxHeight) {
+                    moduleContent.style.maxHeight = null;
+                    icon.textContent = '+';
+                    header.classList.remove('active');
+                } else {
+                    moduleContent.style.maxHeight = moduleContent.scrollHeight + "px";
+                    icon.textContent = '−';
+                    header.classList.add('active');
+                }
+            });
+        });
+
+        // ====================================================
+        // PARTE 2: LÓGICA PARA O MODAL DE ATIVIDADES
+        // ====================================================
         const modal = document.getElementById('activity-modal');
         const closeModalButton = document.querySelector('.close-button');
         const resolverButtons = document.querySelectorAll('.btn-resolver');
         const checkAnswerButton = document.getElementById('modal-check-answer');
         let modalEditor = null;
-        let currentActivityId = null; // Para saber qual atividade estamos resolvendo
+        let currentActivityId = null;
 
         resolverButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 const card = e.target.closest('.card');
                 const title = card.querySelector('h4').textContent;
                 const description = card.querySelector('.card-description').textContent;
-                currentActivityId = card.id; // Pega o ID do card (ex: 'atividade-1')
+                currentActivityId = card.id;
 
                 document.getElementById('modal-activity-title').textContent = title;
                 document.getElementById('modal-activity-description').textContent = description;
                 document.getElementById('modal-output').textContent = '';
-                document.getElementById('modal-output').style.border = 'none'; // Limpa a borda
+                document.getElementById('modal-output').style.border = 'none';
 
                 modal.style.display = 'flex';
 
@@ -94,7 +115,7 @@
                         lineNumbers: true, mode: 'text/x-csrc', theme: 'eclipse', lineWrapping: true
                     });
                 }
-                modalEditor.setValue(''); // Limpa o editor
+                modalEditor.setValue('');
                 setTimeout(() => modalEditor.refresh(), 1);
             });
         });
@@ -114,7 +135,6 @@
             }
         });
 
-        // LÓGICA DE VERIFICAÇÃO REAL
         checkAnswerButton.addEventListener('click', async () => {
             if (modalEditor) {
                 const code = modalEditor.getValue();
@@ -123,7 +143,6 @@
                 outputEl.style.border = 'none';
 
                 try {
-                    // Chama a rota /verify no backend
                     const response = await fetch('/verify', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -131,9 +150,7 @@
                     });
                     const result = await response.json();
                     
-                    // Exibe a saída formatada vinda do backend
                     outputEl.textContent = result.output;
-                    // Muda a cor da borda da saída com base no resultado
                     outputEl.style.border = result.correct ? '2px solid #27ae60' : '2px solid #c0392b';
 
                 } catch (error) {
