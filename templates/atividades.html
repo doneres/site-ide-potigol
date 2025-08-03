@@ -5,12 +5,12 @@
 {% block content %}
 <div class="page-header">
     <h2>Atividades Propostas</h2>
-    <p>Escolha um módulo abaixo para ver os desafios correspondentes.</p>
+    <p>Escolha uma aula abaixo para ver os desafios correspondentes.</p>
 </div>
 
 <div class="module">
     <div class="module-header">
-        <h3>Módulo 01: Conceitos Básicos e Saída de Dados</h3>
+        <h3>Aula 01: Conceitos Básicos e Saída de Dados</h3>
         <span class="module-toggle-icon">+</span>
     </div>
     <div class="module-content">
@@ -37,11 +37,69 @@
 
 <div class="module">
     <div class="module-header">
-        <h3>Módulo 02: Variáveis e Operadores Aritméticos</h3>
+        <h3>Aula 02: Instruções primitivas, variáveis e tipos de dados</h3>
         <span class="module-toggle-icon">+</span>
     </div>
     <div class="module-content">
+        <div class="activities-grid">
+            <div class="card" id="atividade-3">
+                <div class="card-header">
+                    <h4>Atividade 03: Apresentação Simples</h4>
+                    <span class="tag tag-easy">Fácil</span>
+                </div>
+                <p class="card-description">Crie um programa que pergunte o nome do usuário e, em seguida, exiba uma mensagem de boas-vindas personalizada.</p>
+                <button class="btn-resolver">Resolver Atividade</button>
+            </div>
+            <div class="card" id="atividade-4">
+                <div class="card-header">
+                    <h4>Atividade 04: Coletor de Informações</h4>
+                    <span class="tag tag-easy">Fácil</span>
+                </div>
+                <p class="card-description">Elabore um algoritmo que peça ao usuário para inserir seu nome e sua idade. Depois, mostre na tela uma frase que junte essas duas informações.</p>
+                <button class="btn-resolver">Resolver Atividade</button>
+            </div>
+            <div class="card" id="atividade-5">
+                <div class="card-header">
+                    <h4>Atividade 05: Cadastro Rápido</h4>
+                    <span class="tag tag-easy">Fácil</span>
+                </div>
+                <p class="card-description">Construa um programa que solicite três informações do usuário: nome, cidade e profissão. Ao final, exiba cada uma dessas informações em uma linha separada.</p>
+                <button class="btn-resolver">Resolver Atividade</button>
+            </div>
+            <div class="card" id="atividade-6">
+                <div class="card-header">
+                    <h4>Atividade 06: Mensagem Divertida</h4>
+                    <span class="tag tag-easy">Fácil</span>
+                </div>
+                <p class="card-description">Crie um programa que pergunte ao usuário qual é a sua comida favorita e, em seguida, exiba uma mensagem divertida com a resposta.</p>
+                <button class="btn-resolver">Resolver Atividade</button>
+            </div>
+            <div class="card" id="atividade-7">
+                <div class="card-header">
+                    <h4>Atividade 07: Calculadora de Idade Futura</h4>
+                    <span class="tag tag-medium">Médio</span>
+                </div>
+                <p class="card-description">Faça um programa que pergunte o ano de nascimento do usuário e o ano atual. Com esses dados, calcule e mostre a idade atual do usuário e qual será sua idade daqui a 10 anos.</p>
+                <button class="btn-resolver">Resolver Atividade</button>
+            </div>
+            <div class="card" id="atividade-8">
+                <div class="card-header">
+                    <h4>Atividade 08: Conversor de Medidas Simples</h4>
+                    <span class="tag tag-medium">Médio</span>
+                </div>
+                <p class="card-description">Crie um algoritmo que peça ao usuário para inserir uma medida em metros. O programa deve então converter essa medida para centímetros e exibir o resultado.</p>
+                <button class="btn-resolver">Resolver Atividade</button>
+            </div>
+            <div class="card" id="atividade-9">
+                <div class="card-header">
+                    <h4>Atividade 09: Pequeno Diálogo Interativo</h4>
+                    <span class="tag tag-medium">Médio</span>
+                </div>
+                <p class="card-description">Construa um programa que simule um pequeno diálogo, perguntando o nome, cidade e a temperatura. Com base na temperatura (> 25.0), exiba uma mensagem sobre o clima.</p>
+                <button class="btn-resolver">Resolver Atividade</button>
+            </div>
         </div>
+    </div>
 </div>
 
 
@@ -50,17 +108,18 @@
         <span class="close-button">&times;</span>
         <h3 id="modal-activity-title">Título da Atividade</h3>
         <p id="modal-activity-description">Descrição da atividade aqui.</p>
-        
+
         <label for="modal-code-input">Seu código:</label>
         <textarea id="modal-code-input"></textarea>
 
         <div class="input-area modal-input-area">
             <label for="modal-program-input">Entrada do Programa (se houver):</label>
-            <textarea id="modal-program-input" placeholder="Digite aqui os valores para os comandos 'leia', um por linha."></textarea>
+            <textarea id="modal-program-input"
+                placeholder="Digite aqui os valores para os comandos 'leia', um por linha."></textarea>
         </div>
-        
+
         <button id="modal-check-answer" class="btn-card">Verificar Resposta</button>
-        
+
         <div class="modal-output-container">
             <h4>Saída da Verificação:</h4>
             <pre id="modal-output"></pre>
@@ -128,7 +187,7 @@
                 setTimeout(() => modalEditor.refresh(), 1);
             });
         });
-        
+
         function closeModal() {
             modal.style.display = 'none';
             if (modalEditor) {
@@ -156,14 +215,14 @@
                     const response = await fetch('/verify', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            code: code, 
+                        body: JSON.stringify({
+                            code: code,
                             activity_id: currentActivityId,
-                            user_input: userInput 
+                            user_input: userInput
                         })
                     });
                     const result = await response.json();
-                    
+
                     outputEl.textContent = result.output;
                     outputEl.style.border = result.correct ? '2px solid #27ae60' : '2px solid #c0392b';
 

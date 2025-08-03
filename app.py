@@ -9,7 +9,14 @@ app = Flask(__name__)
 # O '\n' é importante porque a função 'escreva' do Potigol adiciona uma nova linha.
 expected_outputs = {
     "atividade-1": "Potigol é legal!\n",
-    "atividade-2": "Douglas\n30\n" # Exemplo: nome em uma linha, idade na outra
+    "atividade-2": "fulado\n30\n",
+    "atividade-3": "Qual é o seu nome?\nSeja bem-vinda, Ana!\n", 
+    "atividade-4": "Digite seu nome:\nDigite sua idade:\nO usuário Carlos tem 32 anos.\n", 
+    "atividade-5": "Nome:\nCidade:\nProfissão:\n--- Cadastro Realizado ---\nNome: Mariana\nCidade: Salvador\nProfissão: Engenheira\n", 
+    "atividade-6": "Qual é a sua comida favorita?\nPizza é uma ótima escolha para hoje!\n", 
+    "atividade-7": "Em que ano você nasceu?\nQual é o ano atual?\nVocê tem ou fará 30 anos em 2025.\nDaqui a 10 anos, você terá 40 anos!\n", 
+    "atividade-8": "Digite a sua altura em metros (use ponto para decimais):\nSua altura em centímetros é: 175.0 cm.\n", 
+    "atividade-9": "Olá! Qual o seu nome?\nBem-vindo, Rafael! De qual cidade você é?\nE qual a temperatura em graus Celsius aí em Recife agora?\nUau, Rafael! Parece que está um dia quente em Recife.\n" 
 }
 
 # --- Rotas das Páginas ---
