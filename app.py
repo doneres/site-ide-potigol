@@ -26,39 +26,37 @@ def materiais():
     return render_template('materiais.html')
 
 # --- Função Central de Execução de Código ---
-def execute_potigol_code(code_string):
+def execute_potigol_code(code_string, user_input_string=""):
     """
-    Recebe uma string de código, salva em um arquivo temporário,
-    executa no Docker e retorna a saída.
+    Recebe código e uma string de entrada, executa no Docker
+    e retorna a saída.
     """
-    # Cria um nome de arquivo temporário e único para evitar conflitos
     temp_filename = f"temp_script_{os.urandom(8).hex()}.poti"
     script_path = os.path.join(os.getcwd(), temp_filename)
 
     try:
-        # Escreve o código do usuário no arquivo temporário
         with open(script_path, 'w', encoding='utf-8') as f:
             f.write(code_string)
 
-        # Comando para rodar o Potigol dentro do container Docker
+        # ATUALIZAÇÃO: Adicionamos a flag '-i' para modo interativo
         command = [
-            "sudo", "docker", "run", "--rm",
+            "sudo", "docker", "run", "-i", "--rm",
             "--network=none",
             "-v", f"{script_path}:/app/script.poti:ro",
             "potigol-runner",
             "script.poti"
         ]
         
-        # Executa o comando com um timeout de 10 segundos
+        # ATUALIZAÇÃO: Passamos a entrada do usuário para o 'input' do processo
         result = subprocess.run(
             command, 
+            input=user_input_string, # AQUI ESTÁ A MÁGICA
             capture_output=True, 
             text=True, 
             timeout=10,
             encoding='utf-8'
         )
         
-        # Combina a saída padrão e a saída de erro para o usuário ver tudo
         return result.stdout + result.stderr
 
     except subprocess.TimeoutExpired:
@@ -67,15 +65,16 @@ def execute_potigol_code(code_string):
         return f"Erro inesperado no servidor: {str(e)}"
     
     finally:
-        # Garante que o arquivo temporário seja sempre removido, mesmo se der erro
         if os.path.exists(script_path):
             os.remove(script_path)
 
 # --- Rotas de Funcionalidade ---
 @app.route('/run', methods=['POST'])
 def run_code():
-    code = request.json.get('code', '')
-    output = execute_potigol_code(code)
+    data = request.json
+    code = data.get('code', '')
+    user_input = data.get('user_input', '') # Pega a entrada do usuário
+    output = execute_potigol_code(code, user_input) # Passa a entrada para a função
     return jsonify({"output": output})
 
 @app.route('/verify', methods=['POST'])
@@ -100,6 +99,3 @@ def verify_answer():
             "correct": False, 
             "output": f"❌ Ops, resposta incorreta.\n\nSaída esperada:\n{expected_output}\nSua saída:\n{actual_output}"
         })
-
-# Note que não há mais o bloco "if __name__ == '__main__':"
-# Agora a execução é responsabilidade do Gunicorn e do Systemd.

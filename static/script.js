@@ -11,6 +11,8 @@ document.getElementById('runButton').addEventListener('click', runCode);
 
 async function runCode() {
     const code = editor.getValue();
+    // NOVO: Pega o texto da caixa de entrada
+    const userInput = document.getElementById('programInput').value;
     const outputElement = document.getElementById('output');
     
     outputElement.textContent = 'Executando...';
@@ -22,7 +24,8 @@ async function runCode() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ code: code })
+            // NOVO: Envia tanto o código quanto a entrada do usuário
+            body: JSON.stringify({ code: code, user_input: userInput })
         });
 
         if (!response.ok) {
@@ -32,7 +35,6 @@ async function runCode() {
         const result = await response.json();
         outputElement.textContent = result.output;
     } catch (error) {
-        // Pega erros de conexão ou erros de servidor
         outputElement.textContent = 'Erro ao conectar com o servidor: ' + error.message;
         outputElement.style.color = '#ff6b6b';
     }

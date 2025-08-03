@@ -471,3 +471,24 @@ pre#output {
     background-color: #6c757d;
     pointer-events: none;
 }
+
+.input-area {
+    margin-top: 1.5em;
+}
+.input-area label {
+    display: block;
+    margin-bottom: 0.5em;
+    font-weight: 500;
+    color: #555;
+}
+#programInput {
+    width: 98%;
+    max-width: 98%;
+    min-width: 98%;
+    height: 100px;
+    font-family: monospace;
+    font-size: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

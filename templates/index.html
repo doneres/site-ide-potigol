@@ -5,6 +5,12 @@
 {% block content %}
     <p class="instructions">Digite seu código Potigol abaixo e clique em Executar.</p>
     <textarea id="codeInput" placeholder='escreva "Olá, Mundo!"'></textarea>
+
+    <div class="input-area">
+        <label for="programInput">Entrada do Programa (se houver):</label>
+        <textarea id="programInput" placeholder="Digite aqui os valores que o 'leia' vai pedir, um por linha."></textarea>
+    </div>
+
     <button id="runButton">Executar</button>
     <h3>Saída:</h3>
     <pre id="output"></pre>
